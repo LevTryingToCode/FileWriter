@@ -1,11 +1,16 @@
 import tkinter as tk
 from pathlib import Path
+import os  # új import
 from playsound3 import playsound
 import threading
-
+import sys
 class File_Itself:
     def __init__(self):
-        self.all_files = [f.name for f in Path('.').iterdir() if f.is_file() and f.name != "FWriter.py"]
+        if getattr(sys, 'frozen', False):
+            self.base_dir = sys._MEIPASS
+        else:
+            self.base_dir = os.path.dirname(os.path.abspath(__file__))  # A forrásfájl mappa
+        self.all_files = [f.name for f in Path(self.base_dir).iterdir() if f.is_file() and f.name != "FWriter.py"]
         self.file_containments = []
         self.fwidth = 0
         self.fheight = 0
@@ -14,14 +19,18 @@ class File_Itself:
         return self.all_files
 
     def FileRead(self, filename):
-        with open(filename, "r", encoding="utf-8") as file:
+        # Dinamikus elérési út a fájlok számára
+        file_path = os.path.join(self.base_dir, filename)
+        with open(file_path, "r", encoding="utf-8") as file:
             lines = file.readlines()
             self.file_containments = lines
             self.fwidth = max(len(line.rstrip("\n")) for line in lines)
             self.fheight = len(lines)
 
     def FileWrite(self, filename, content):
-        with open(filename, "w", encoding="utf-8") as file:
+        # Dinamikus elérési út a fájlok számára
+        file_path = os.path.join(self.base_dir, filename)
+        with open(file_path, "w", encoding="utf-8") as file:
             file.write(content)
 
 
