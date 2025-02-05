@@ -4,6 +4,7 @@ import os  # új import
 from playsound3 import playsound
 import threading
 import sys
+
 class File_Itself:
     def __init__(self):
         if getattr(sys, 'frozen', False):
